@@ -125,6 +125,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           ht: 15,
                         ),
                         ButtonWidget(
+                          width: double.infinity,
                           title: "Register",
                           bgColor: Colors.blueAccent,
                           func: () {
@@ -133,6 +134,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           radius: 5,
                         ),
                         ButtonWidget(
+                          width: double.infinity,
                           title: "Cancel",
                           bgColor: Colors.black,
                           func: () {

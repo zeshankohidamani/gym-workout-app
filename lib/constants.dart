@@ -12,6 +12,12 @@ const kHeadingNormalTextStyle = TextStyle(
   fontSize: 32,
 );
 
+const kHeadingNormalBoldTextStyle = TextStyle(
+  color: Colors.white,
+  fontSize: 32,
+  fontWeight: FontWeight.bold,
+);
+
 const kCardHeadingTextStyle = TextStyle(
   color: Colors.blue,
   fontWeight: FontWeight.bold,

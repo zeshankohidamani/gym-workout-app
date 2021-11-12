@@ -6,6 +6,7 @@ class ButtonWidget extends StatelessWidget {
   final String title;
   final Color bgColor;
   final double radius;
+  late double? width;
   late Function() func;
 
   ButtonWidget({Key? key,
@@ -13,6 +14,7 @@ class ButtonWidget extends StatelessWidget {
     required this.bgColor,
     required this.func,
     required this.radius,
+    this.width,
   }) : super(key: key);
 
   @override
@@ -21,7 +23,7 @@ class ButtonWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
       child: SizedBox(
         height: 45,
-        width: double.infinity,
+        width: width,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             primary: bgColor,

@@ -160,6 +160,7 @@ class _SignInPageState extends State<SignInPage> {
                           ht: 30,
                         ),
                         ButtonWidget(
+                          width: double.infinity,
                           title: "Login",
                           radius: 5,
                           bgColor: Colors.blueAccent,
@@ -172,6 +173,7 @@ class _SignInPageState extends State<SignInPage> {
                           // );
                         ),
                         ButtonWidget(
+                          width: double.infinity,
                           title: "Sign Up",
                           bgColor: Colors.black,
                           func: () {

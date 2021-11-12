@@ -67,6 +67,7 @@ class WelcomePage extends StatelessWidget {
                       ),
                       FixedSpace(ht: 10),
                       ButtonWidget(
+                        width: double.infinity,
                         title: "Try Now",
                         radius: 40,
                         bgColor: Colors.blueAccent,
@@ -80,6 +81,7 @@ class WelcomePage extends StatelessWidget {
                         },
                       ),
                       ButtonWidget(
+                        width: double.infinity,
                         title: "Login",
                         radius: 40,
                         bgColor: Colors.black,
