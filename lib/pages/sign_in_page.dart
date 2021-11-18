@@ -134,16 +134,8 @@ class _SignInPageState extends State<SignInPage> {
                           ht: 15,
                         ),
                         GestureDetector(
-                          onTap: () {
-                            print("Email: $email\n"
-                                "Password: $password");
-                            // Go to Forget Password Page
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Forget_Password(),
-                              ),
-                            );
+                          onTap: (){
+                            Get.to(const Forget_Password());
                           },
                           child: const Align(
                             alignment: Alignment.bottomRight,

@@ -29,3 +29,7 @@ const kParaTextStyle = TextStyle(
   fontSize: 13,
 );
 
+const kWhiteColor = TextStyle(
+  color: Colors.white,
+);
+

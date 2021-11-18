@@ -32,6 +32,8 @@ class ButtonWidget extends StatelessWidget {
               side: BorderSide(
                 color: bgColor == Colors.blueAccent
                     ? Colors.blueAccent
+                    : bgColor == Colors.deepOrangeAccent
+                    ? Colors.deepOrangeAccent
                     : Colors.blue,
                 width: 1,
               ),

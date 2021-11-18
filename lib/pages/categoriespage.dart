@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:workout_project/constants.dart';
 import 'package:workout_project/controller/data_controller.dart';
 import 'package:workout_project/pages/about_you.dart';
+import 'package:workout_project/pages/profile_page.dart';
 import 'package:workout_project/widgets.dart';
 
 class CategoriesPage extends StatefulWidget {
@@ -53,7 +54,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
       _selectedIndex = index;
     });
     if (index == 1) {
-      Get.to(AboutYou());
+      Get.to(Profile_page());
     }
   }
 

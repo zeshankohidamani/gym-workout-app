@@ -122,6 +122,7 @@ class Forget_Password extends StatelessWidget {
                           ht: 30,
                         ),
                         ButtonWidget(
+                          width: double.infinity,
                           title: "Submit",
                           radius: 5,
                           bgColor: Colors.blueAccent,
@@ -135,6 +136,7 @@ class Forget_Password extends StatelessWidget {
                           },
                         ),
                         ButtonWidget(
+                          width: double.infinity,
                           title: "Cancel",
                           bgColor: Colors.black,
                           radius: 5,
