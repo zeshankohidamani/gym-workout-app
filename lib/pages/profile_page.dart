@@ -30,24 +30,24 @@ class _Profile_pageState extends State<Profile_page> {
     },
   ];
 
-  onItemPress(BuildContext context, int index) async{
+  onItemPress(BuildContext context, int index) async {
     if (index == 0) {
       setState(() {
         existingCardVisibility = false;
       });
       var response =
           await StripeService.payWithNewCard(amount: '150', currency: 'USD');
-      if (response.success) {
-        Scaffold.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.message),
-            duration: const Duration(milliseconds: 1200),
-          ),
-        );
-      }
-    } else if (index == 1) {
+
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text(response.message),
+          duration: Duration(milliseconds: response.success == true? 1200:3000),
+        ),
+      );
+    }
+    else if(index == 1){
       setState(() {
-        existingCardVisibility = true;
+        existingCardVisibility = !existingCardVisibility;
       });
     }
   }
