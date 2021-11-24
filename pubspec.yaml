@@ -39,6 +39,10 @@ dependencies:
   firebase_auth:
   get:
   cloud_firestore:
+  youtube_player_flutter:
+  flutter_credit_card:
+  stripe_payment:
+  http:
 
 dev_dependencies:
   flutter_test:

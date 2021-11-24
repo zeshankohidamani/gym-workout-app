@@ -1,10 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:workout_project/constants.dart';
 import 'package:workout_project/controller/data_controller.dart';
-import 'package:workout_project/pages/about_you.dart';
 import 'package:workout_project/pages/profile_page.dart';
 import 'package:workout_project/widgets.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class CategoriesPage extends StatefulWidget {
   @override
@@ -12,13 +15,86 @@ class CategoriesPage extends StatefulWidget {
 }
 
 class _CategoriesPageState extends State<CategoriesPage> {
-  List popularImage = ['1', '2', '3', '4','5'];
+  late YoutubePlayerController _controller;
+  late TextEditingController _idController;
+  late TextEditingController _seekToController;
+
+  late PlayerState _playerState;
+  late YoutubeMetaData _videoMetaData;
+  double _volume = 100;
+  bool _muted = false;
+  bool _isPlayerReady = false;
+
+  final List<String> _ids = [
+    'b4fNr03orxA',
+    'W-jPRE_D058',
+    'DD5oEcN_VOM',
+    'FIRBV0EkEzY',
+    'hveOZMOysaA',
+    '14wdIXJHONI',
+    'NBtFqeGjfig',
+    'd5Lvn3FtfxE',
+    'wu_uJzxvvgw',
+    'ICBXg2ZXMvc',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = YoutubePlayerController(
+      initialVideoId: _ids.first,
+      flags: const YoutubePlayerFlags(
+        mute: false,
+        autoPlay: false,
+        disableDragSeek: false,
+        loop: false,
+        isLive: false,
+        forceHD: false,
+        enableCaption: true,
+      ),
+    )..addListener(listener);
+    _idController = TextEditingController();
+    _seekToController = TextEditingController();
+    _videoMetaData = const YoutubeMetaData();
+    _playerState = PlayerState.unknown;
+  }
+
+  void listener() {
+    if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
+      setState(() {
+        _playerState = _controller.value.playerState;
+        _videoMetaData = _controller.metadata;
+      });
+    }
+  }
+
+  @override
+  void deactivate() {
+    // Pauses video while navigating to next page.
+    _controller.pause();
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _idController.dispose();
+    _seekToController.dispose();
+    super.dispose();
+  }
+
+  List popularImage = ['1', '2', '3', '4'];
   List popularString = [
     'Dribble Exercises',
     'Combine Exercises',
     'Push-Up Exercises',
     'Dribble Exercises',
-    'Dribble Exercises',
+  ];
+  List popularUrl = [
+    's8taXR3mYa8',
+    'vYCIqtJ1UiE',
+    'cXzglB3l-sE',
+    'ARLCRMKu6as'
   ];
 
   List hardWorkoutImage = ['5', '6', '7', '8'];
@@ -82,278 +158,420 @@ class _CategoriesPageState extends State<CategoriesPage> {
           selectedItemColor: Colors.lightBlueAccent,
           onTap: _onItemTapped,
         ),
-        body: Column(
+        body: Stack(
           children: [
-            Container(
-              height: myHeight / 2,
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/3.jpg"),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Row for Text and Image
-                    Row(
+            Column(
+              children: [
+                Container(
+                  height: myHeight / 2,
+                  width: double.infinity,
+                  color: Colors.black,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Row for Hey, and Ramdan
+                        // Row for Text and Image
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Row for Hey, and Ramdan
+                            Row(
+                              children: [
+                                Text(
+                                  "Hey, ",
+                                  style: kHeadingBebasNeueTextStyle.copyWith(
+                                    color: Colors.lightBlueAccent,
+                                    fontSize: 25,
+                                  ),
+                                ),
+                                Text(
+                                  "Zee",
+                                  style: kHeadingBebasNeueTextStyle.copyWith(
+                                    fontSize: 25,
+                                    // color: Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const CircleAvatar(
+                              radius: 20,
+                              child: CircleAvatar(
+                                radius: 18,
+                                backgroundImage:
+                                AssetImage("assets/images/5.jpg"),
+                              ),
+                            ),
+                          ],
+                        ),
+                        CircleAvatar(
+                          radius: 28,
+                          backgroundColor: Colors.blueAccent.withOpacity(0.5),
+                          child: const CircleAvatar(
+                            radius: 22,
+                            backgroundColor: Colors.lightBlueAccent,
+                            child: Icon(
+                              Icons.play_arrow,
+                              size: 34,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                         Row(
                           children: [
                             Text(
-                              "Hey, ",
+                              "Find ",
                               style: kHeadingBebasNeueTextStyle.copyWith(
                                 color: Colors.lightBlueAccent,
                                 fontSize: 25,
                               ),
                             ),
                             Text(
-                              "Zee",
+                              "your Workout",
                               style: kHeadingBebasNeueTextStyle.copyWith(
                                 fontSize: 25,
-                                // color: Colors.red,
                               ),
                             ),
                           ],
                         ),
-                        const CircleAvatar(
-                          radius: 20,
-                          child: CircleAvatar(
-                            radius: 18,
-                            backgroundImage: AssetImage("assets/images/5.jpg"),
-                          ),
-                        ),
+                        // TODO: Place for the Search Workout
                       ],
                     ),
-                    CircleAvatar(
-                      radius: 28,
-                      backgroundColor: Colors.blueAccent.withOpacity(0.5),
-                      child: const CircleAvatar(
-                        radius: 22,
-                        backgroundColor: Colors.lightBlueAccent,
-                        child: Icon(
-                          Icons.play_arrow,
-                          size: 34,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "Find ",
-                          style: kHeadingBebasNeueTextStyle.copyWith(
-                            color: Colors.lightBlueAccent,
-                            fontSize: 25,
-                          ),
-                        ),
-                        Text(
-                          "your Workout",
-                          style: kHeadingBebasNeueTextStyle.copyWith(
-                            fontSize: 25,
-                          ),
-                        ),
-                      ],
-                    ),
-                    // TODO: Place for the Search Workout
-                  ],
+                  ),
                 ),
-              ),
+                Container(
+                  height: myHeight / 2,
+                  width: double.infinity,
+                  color: Colors.black,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              categoriebuttonwidget(
+                                title: "Popular",
+                                func: () {
+                                  setState(() {
+                                    playListTitle = "Popular Workout";
+                                    playListIndex = 0;
+                                  });
+                                },
+                              ),
+                              categoriebuttonwidget(
+                                title: "Hard Workout",
+                                func: () {
+                                  setState(() {
+                                    playListIndex = 1;
+                                    playListTitle = "Hard Workout";
+                                  });
+                                },
+                              ),
+                              categoriebuttonwidget(
+                                title: "Full body",
+                                func: () {
+                                  setState(() {
+                                    playListTitle = "Full Body Workout";
+                                    playListIndex = 2;
+                                  });
+                                },
+                              ),
+                              categoriebuttonwidget(
+                                title: "CrossFit",
+                                func: () {
+                                  setState(() {
+                                    playListTitle = "CrossFit Workout";
+                                    playListIndex = 3;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Expanded(
+                        //   flex: 2,
+                        //   child: TextField(
+                        //     enabled: _isPlayerReady,
+                        //     controller: _idController,
+                        //     decoration: InputDecoration(
+                        //       border: InputBorder.none,
+                        //       hintText:
+                        //       'Enter youtube \<video id\> or \<link\>',
+                        //       fillColor: Colors.blueAccent.withAlpha(20),
+                        //       filled: true,
+                        //       hintStyle: const TextStyle(
+                        //         fontWeight: FontWeight.w300,
+                        //         color: Colors.blueAccent,
+                        //       ),
+                        //       suffixIcon: _loadCueButton('LOAD'),
+                        //     ),
+                        //   ),
+                        // ),
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            playListTitle,
+                            style: kHeadingNormalBoldTextStyle,
+                          ),
+                        ),
+                        Expanded(
+                          flex: 6,
+                          child: ListView.builder(
+                            itemCount: 4,
+                            shrinkWrap: true,
+                            physics: ScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              if (playListIndex == 0) {
+                                return Card(
+                                  color: Colors.black,
+                                  child: Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          var id = YoutubePlayer.convertUrlToId(
+                                            popularUrl[index],
+                                          ) ??
+                                              '';
+                                          _controller.load(id);
+                                          FocusScope.of(context).requestFocus(FocusNode());
+
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: AssetImage(
+                                                  "assets/images/${popularImage[index]}.jpg"),
+                                              fit: BoxFit.cover,
+                                            ),
+                                            borderRadius:
+                                            BorderRadius.circular(20),
+                                          ),
+                                          height: 130,
+                                          width: 130,
+                                        ),
+                                      ),
+                                      FixedSpace(
+                                        ht: 10,
+                                      ),
+                                      Text(
+                                        popularString[index] != ""
+                                            ? popularString[index]
+                                            : "Loading",
+                                        style: kParaTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else if (playListIndex == 1) {
+                                return Card(
+                                  color: Colors.black,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage(
+                                                "assets/images/${hardWorkoutImage[index]}.jpg"),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          borderRadius:
+                                          BorderRadius.circular(20),
+                                        ),
+                                        height: 130,
+                                        width: 130,
+                                      ),
+                                      FixedSpace(
+                                        ht: 10,
+                                      ),
+                                      Text(
+                                        hardWorkoutString[index] != ""
+                                            ? hardWorkoutString[index]
+                                            : "Loading",
+                                        style: kParaTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else if (playListIndex == 2) {
+                                return Card(
+                                  color: Colors.black,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage(
+                                                "assets/images/${fullBodyImage[index]}.jpg"),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          borderRadius:
+                                          BorderRadius.circular(20),
+                                        ),
+                                        height: 130,
+                                        width: 130,
+                                      ),
+                                      FixedSpace(
+                                        ht: 10,
+                                      ),
+                                      Text(
+                                        fullBodyString[index] != ""
+                                            ? fullBodyString[index]
+                                            : "Loading",
+                                        style: kParaTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                return Card(
+                                  color: Colors.black,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage(
+                                                "assets/images/${crossFitImage[index]}.jpg"),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          borderRadius:
+                                          BorderRadius.circular(20),
+                                        ),
+                                        height: 130,
+                                        width: 130,
+                                      ),
+                                      FixedSpace(
+                                        ht: 10,
+                                      ),
+                                      Text(
+                                        crossFitString[index] != ""
+                                            ? crossFitString[index]
+                                            : "Loading",
+                                        style: kParaTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-            Container(
-              height: myHeight / 2,
-              width: double.infinity,
-              color: Colors.black,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+            SizedBox(
+              height: 254,
+              child: YoutubePlayerBuilder(
+                onExitFullScreen: () {
+                  // The player forces portraitUp after exiting fullscreen. This overrides the behaviour.
+                  SystemChrome.setPreferredOrientations(
+                      DeviceOrientation.values);
+                },
+                player: YoutubePlayer(
+                  controller: _controller,
+                  showVideoProgressIndicator: true,
+                  progressIndicatorColor: Colors.black,
+                  topActions: <Widget>[
+                    const SizedBox(width: 8.0),
                     Expanded(
-                      flex: 2,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          categoriebuttonwidget(
-                            title: "Popular",
-                            func: () {
-                              setState(() {
-                                playListTitle = "Popular Workout";
-                                playListIndex = 0;
-                              });
-                            },
-                          ),
-                          categoriebuttonwidget(
-                            title: "Hard Workout",
-                            func: () {
-                              setState(() {
-                                playListIndex = 1;
-                                playListTitle = "Hard Workout";
-                              });
-                            },
-                          ),
-                          categoriebuttonwidget(
-                            title: "Full body",
-                            func: () {
-                              setState(() {
-                                playListTitle = "Full Body Workout";
-                                playListIndex = 2;
-                              });
-                            },
-                          ),
-                          categoriebuttonwidget(
-                            title: "CrossFit",
-                            func: () {
-                              setState(() {
-                                playListTitle = "CrossFit Workout";
-                                playListIndex = 3;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
                       child: Text(
-                        playListTitle,
-                        style: kHeadingNormalBoldTextStyle,
+                        _controller.metadata.title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                     ),
-                    Expanded(
-                      flex: 6,
-                      child: ListView.builder(
-                        itemCount: 4,
-                        shrinkWrap: true,
-                        physics: ScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          if(playListIndex == 0) {
-                            return Card(
-                              color: Colors.black,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                            "assets/images/${popularImage[index]}.jpg"),
-                                        fit: BoxFit.cover,
-                                      ),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    height: 130,
-                                    width: 130,
-                                  ),
-                                  FixedSpace(
-                                    ht: 10,
-                                  ),
-                                  Text(
-                                    popularString[index]  != ""? popularString[index] : "Loading",
-                                    style: kParaTextStyle,
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                          else if(playListIndex == 1) {
-                            return Card(
-                              color: Colors.black,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                            "assets/images/${hardWorkoutImage[index]}.jpg"),
-                                        fit: BoxFit.cover,
-                                      ),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    height: 130,
-                                    width: 130,
-                                  ),
-                                  FixedSpace(
-                                    ht: 10,
-                                  ),
-                                  Text(
-                                    hardWorkoutString[index] != ""? hardWorkoutString[index] : "Loading",
-                                    style: kParaTextStyle,
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                          else if(playListIndex == 2) {
-                            return Card(
-                              color: Colors.black,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                            "assets/images/${fullBodyImage[index]}.jpg"),
-                                        fit: BoxFit.cover,
-                                      ),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    height: 130,
-                                    width: 130,
-                                  ),
-                                  FixedSpace(
-                                    ht: 10,
-                                  ),
-                                  Text(
-                                    fullBodyString[index] != ""? fullBodyString[index] : "Loading",
-                                    style: kParaTextStyle,
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                          else {
-                            return Card(
-                              color: Colors.black,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                            "assets/images/${crossFitImage[index]}.jpg"),
-                                        fit: BoxFit.cover,
-                                      ),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    height: 130,
-                                    width: 130,
-                                  ),
-                                  FixedSpace(
-                                    ht: 10,
-                                  ),
-                                  Text(
-                                    crossFitString[index] != ""? crossFitString[index] : "Loading",
-                                    style: kParaTextStyle,
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                        },
+                    IconButton(
+                      icon: const Icon(
+                        Icons.settings,
+                        color: Colors.white,
+                        size: 25.0,
                       ),
+                      onPressed: () {
+                        log('Settings Tapped!');
+                      },
                     ),
                   ],
+                  onReady: () {
+                    _isPlayerReady = true;
+                  },
+                  onEnded: (data) {
+                    _controller.load(_ids[
+                    (_ids.indexOf(data.videoId) + 1) % _ids.length]);
+                    // _showSnackBar('Next Video Started!');
+                  },
+                ),
+                builder: (context, player) => Scaffold(
+                  body: ListView(
+                    children: [
+                      player,
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _space,
+                            _space,
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget get _space => const SizedBox(height: 10);
+
+  Widget _loadCueButton(String action) {
+    return Expanded(
+      child: MaterialButton(
+        color: Colors.black,
+        onPressed: _isPlayerReady
+            ? () {
+          if (_idController.text.isNotEmpty) {
+            var id = YoutubePlayer.convertUrlToId(
+              _idController.text,
+            ) ??
+                '';
+            if (action == 'LOAD') _controller.load(id);
+            if (action == 'CUE') _controller.cue(id);
+            FocusScope.of(context).requestFocus(FocusNode());
+          } else {
+            // _showSnackBar('Source can\'t be empty!');
+          }
+        }
+            : null,
+        disabledColor: Colors.grey,
+        disabledTextColor: Colors.black,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 14.0),
+          child: Text(
+            action,
+            style: const TextStyle(
+              fontSize: 18.0,
+              color: Colors.white,
+              fontWeight: FontWeight.w300,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );

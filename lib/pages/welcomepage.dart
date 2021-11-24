@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:workout_project/constants.dart';
 import 'package:workout_project/pages/about_you.dart';
+import 'package:workout_project/pages/sign_in_page.dart';
 import '../widgets.dart';
 
 class WelcomePage extends StatelessWidget {
@@ -85,7 +87,9 @@ class WelcomePage extends StatelessWidget {
                         title: "Login",
                         radius: 40,
                         bgColor: Colors.black,
-                        func: () {},
+                        func: () {
+                          Get.to(const SignInPage());
+                        },
                       ),
                     ],
                   ),

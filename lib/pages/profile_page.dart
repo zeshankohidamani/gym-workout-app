@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_credit_card/credit_card_widget.dart';
+import 'package:workout_project/service/payment_service.dart';
 import 'package:workout_project/widgets.dart';
 import 'package:workout_project/constants.dart';
 
@@ -10,125 +12,269 @@ class Profile_page extends StatefulWidget {
 }
 
 class _Profile_pageState extends State<Profile_page> {
+  bool existingCardVisibility = false;
+  List cards = [
+    {
+      'cardNumber': '4242424242424242',
+      'expireDate': '04/24',
+      'cardHolderName': 'Zeshan ul Haq',
+      'cvvCode': '424',
+      'showCardBack': false,
+    },
+    {
+      'cardNumber': '3434343422456575',
+      'expireDate': '21/24',
+      'cardHolderName': 'Atiq ur Rehman',
+      'cvvCode': '762',
+      'showCardBack': false,
+    },
+  ];
+
+  onItemPress(BuildContext context, int index) async{
+    if (index == 0) {
+      setState(() {
+        existingCardVisibility = false;
+      });
+      var response =
+          await StripeService.payWithNewCard(amount: '150', currency: 'USD');
+      if (response.success) {
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.message),
+            duration: const Duration(milliseconds: 1200),
+          ),
+        );
+      }
+    } else if (index == 1) {
+      setState(() {
+        existingCardVisibility = true;
+      });
+    }
+  }
+
+  payViaExistingCard(BuildContext context, card) {
+    var response = StripeService.payVaiExistingCard(
+        amount: '150', currency: 'USD', card: card);
+    if (response.success) {
+      Scaffold.of(context)
+          .showSnackBar(
+            SnackBar(
+              content: Text(response.message),
+              duration: const Duration(milliseconds: 1200),
+            ),
+          )
+          .closed
+          .then((_) {
+        setState(() {
+          existingCardVisibility = false;
+        });
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    StripeService.init();
+  }
+
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     double myHeight = MediaQuery.of(context).size.height - 40;
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        body: Column(
-          children: [
-            Container(
-              height: 80,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade900,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(25),
-                  bottomRight: Radius.circular(25),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                height: 80,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade900,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(25),
+                    bottomRight: Radius.circular(25),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const CircleAvatar(
+                      backgroundColor: Colors.blueAccent,
+                      radius: 28,
+                      child: CircleAvatar(
+                        backgroundImage: AssetImage("assets/images/5.jpg"),
+                        radius: 25,
+                      ),
+                    ),
+                    FixedSpace(
+                      wd: 5,
+                    ),
+                    Text(
+                      "Zeshan Ul Haq",
+                      style: kHeadingNormalTextStyle.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CircleAvatar(
-                    backgroundColor: Colors.blueAccent,
-                    radius: 28,
-                    child: CircleAvatar(
-                      backgroundImage: AssetImage("assets/images/5.jpg"),
-                      radius: 25,
-                    ),
-                  ),
-                  FixedSpace(
-                    wd: 5,
-                  ),
-                  Text(
-                    "Zeshan Ul Haq",
-                    style: kHeadingNormalTextStyle.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
-                    ),
-                  ),
-                ],
+              FixedSpace(
+                ht: 15,
               ),
-            ),
-            FixedSpace(
-              ht: 15,
-            ),
-            Card(
-              color: Colors.grey.shade900,
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: const Icon(
-                      Icons.mail_outline,
-                      color: Colors.white,
+              Card(
+                color: Colors.grey.shade900,
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: const Icon(
+                        Icons.mail_outline,
+                        color: Colors.white,
+                      ),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            "Email",
+                            style: kWhiteColor,
+                          ),
+                          Text(
+                            "zeshanulhaque@gmail.com",
+                            style: kWhiteColor,
+                          ),
+                        ],
+                      ),
                     ),
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          "Email",
-                          style: kWhiteColor,
-                        ),
-                        Text(
-                          "zeshanulhaque@gmail.com",
-                          style: kWhiteColor,
-                        ),
-                      ],
+                    ListTile(
+                      leading: const Icon(
+                        Icons.phone,
+                        color: Colors.white,
+                      ),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            "Phone",
+                            style: kWhiteColor,
+                          ),
+                          Text(
+                            "(92)333-9411708",
+                            style: kWhiteColor,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.phone,
-                      color: Colors.white,
+                    ListTile(
+                      leading: const Icon(
+                        Icons.date_range,
+                        color: Colors.white,
+                      ),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            "Join Date",
+                            style: kWhiteColor,
+                          ),
+                          Text(
+                            "Friday, 17 March 2021",
+                            style: kWhiteColor,
+                          ),
+                        ],
+                      ),
                     ),
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          "Phone",
-                          style: kWhiteColor,
+                    Container(
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        physics: ScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          Icon? icon;
+                          Text? txt;
+
+                          switch (index) {
+                            case 0:
+                              icon = Icon(
+                                Icons.add_circle,
+                                color: theme.primaryColor,
+                              );
+                              txt = Text(
+                                "Pay via new card",
+                                style: kWhiteColor,
+                              );
+                              break;
+                            case 1:
+                              icon = Icon(
+                                Icons.credit_card,
+                                color: theme.primaryColor,
+                              );
+                              txt = Text(
+                                "Pay via existing card",
+                                style: kWhiteColor,
+                              );
+                              break;
+                          }
+
+                          return InkWell(
+                            onTap: () {
+                              onItemPress(context, index);
+                            },
+                            child: ListTile(
+                              title: txt,
+                              leading: icon,
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) => Divider(
+                          color: theme.primaryColor,
                         ),
-                        Text(
-                          "(92)333-9411708",
-                          style: kWhiteColor,
-                        ),
-                      ],
+                        itemCount: 2,
+                      ),
                     ),
-                  ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.date_range,
-                      color: Colors.white,
-                    ),
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          "Join Date",
-                          style: kWhiteColor,
+                    Visibility(
+                      visible: existingCardVisibility,
+                      child: Container(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: ScrollPhysics(),
+                          itemCount: cards.length,
+                          itemBuilder: (context, index) {
+                            var card = cards[index];
+                            return InkWell(
+                              onTap: () {
+                                print(card['cardHolderName']);
+                                payViaExistingCard(context, card);
+                              },
+                              child: CreditCardWidget(
+                                cardNumber: card['cardNumber'],
+                                expiryDate: card['expireDate'],
+                                cardHolderName: card['cardHolderName'],
+                                cvvCode: card['cvvCode'],
+                                showBackView: false,
+                                onCreditCardWidgetChange: (CreditCardBrand) {},
+                              ),
+                            );
+                          },
                         ),
-                        Text(
-                          "Friday, 17 March 2021",
-                          style: kWhiteColor,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            FixedSpace(
-              ht: 15,
-            ),
-            ButtonWidget(
-              title: "Sign Out",
-              bgColor: Colors.deepOrangeAccent,
-              func: () {},
-              radius: 5,
-              width: double.infinity,
-            ),
-          ],
+              FixedSpace(
+                ht: 15,
+              ),
+              ButtonWidget(
+                title: "Sign Out",
+                bgColor: Colors.deepOrangeAccent,
+                func: () {},
+                radius: 5,
+                width: double.infinity,
+              ),
+            ],
+          ),
         ),
       ),
     );
