@@ -4,6 +4,7 @@ import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:get/get.dart';
 import 'package:workout_project/controller/auth_controller.dart';
 import 'package:workout_project/controller/data_controller.dart';
+import 'package:workout_project/pages/categoriespage.dart';
 import 'package:workout_project/pages/sign_in_page.dart';
 import 'package:workout_project/service/payment_service.dart';
 import 'package:workout_project/widgets.dart';
@@ -50,7 +51,11 @@ class _Profile_pageState extends State<Profile_page> {
       });
       var response =
           await StripeService.payWithNewCard(amount: '150', currency: 'USD');
-
+      if(response.success == true){
+        print("***********************\n"
+            "in payment done ");
+        await dataController.changePurchaseBool();
+      }
       Scaffold.of(context).showSnackBar(
         SnackBar(
           content: Text(response.message),
@@ -58,6 +63,9 @@ class _Profile_pageState extends State<Profile_page> {
               Duration(milliseconds: response.success == true ? 1200 : 3000),
         ),
       );
+      if(response.success == true){
+        Get.offAll((SignInPage()));
+      }
     } else if (index == 1) {
       setState(() {
         existingCardVisibility = !existingCardVisibility;
@@ -83,6 +91,10 @@ class _Profile_pageState extends State<Profile_page> {
         });
       });
     }
+  }
+  ChangePurchaseBool() async {
+
+    await dataController.changePurchaseBool();
   }
 
   UIUpdate() async{

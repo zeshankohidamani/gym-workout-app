@@ -60,6 +60,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
     _videoMetaData = const YoutubeMetaData();
     _playerState = PlayerState.unknown;
     CheckPurchaseBool();
+    print("category init   calleeedd  ***************");
   }
 
   CheckPurchaseBool() async {
@@ -71,9 +72,12 @@ class _CategoriesPageState extends State<CategoriesPage> {
   }
 
   ChangePurchaseBool() async {
+
+    dataController.changePurchaseBool();
     var response = await dataController.UserData();
     setState(() {
       purchaseBool = !response.docs[0]['isPurchase'];
+
     });
     print("**********************\n"
         "after change purchasee call purchaseBool: $purchaseBool");

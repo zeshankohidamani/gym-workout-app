@@ -41,7 +41,7 @@ dependencies:
   cloud_firestore: ^2.5.3
   youtube_player_flutter:
   flutter_credit_card:
-  stripe_payment:
+  stripe_payment: ^1.1.4
   http:
   firebase_messaging:
 

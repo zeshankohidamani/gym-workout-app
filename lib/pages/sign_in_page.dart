@@ -22,6 +22,12 @@ class _SignInPageState extends State<SignInPage> {
   login() {
     authController.login(email, password);
   }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("init of sign_in");
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -50,13 +50,13 @@ class DataController extends GetxController {
         .where('user_Id', isEqualTo: authController.userId)
         .get();
     value = response.docs[0]['isPurchase'];
-    // print("before saving: $value");
+    print("before saving: $value");
     var collection = await firebaseInstance.collection('userslist');
 
     collection.doc(authController.userId).update(
       {'isPurchase': !value},
     );
-    // print('after saving : ${!value}');
+    print('after saving : ${!value}');
     return value;
   }
 
