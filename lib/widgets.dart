@@ -114,17 +114,20 @@ class TextFieldWidget extends StatelessWidget {
   String labelText;
   late TextInputType? textInputType;
   bool obscureTextBool;
+  String? Function(String?) validator;
 
   TextFieldWidget({
     required this.onChange,
     required this.labelText,
     required this.obscureTextBool,
     this.textInputType,
+    required this.validator,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      validator: validator,
       obscureText: obscureTextBool,
       onChanged: onChange,
       keyboardType: textInputType,

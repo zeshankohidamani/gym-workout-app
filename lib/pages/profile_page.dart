@@ -1,5 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
+import 'package:get/get.dart';
+import 'package:workout_project/controller/auth_controller.dart';
+import 'package:workout_project/controller/data_controller.dart';
+import 'package:workout_project/pages/sign_in_page.dart';
 import 'package:workout_project/service/payment_service.dart';
 import 'package:workout_project/widgets.dart';
 import 'package:workout_project/constants.dart';
@@ -12,6 +17,14 @@ class Profile_page extends StatefulWidget {
 }
 
 class _Profile_pageState extends State<Profile_page> {
+
+  DataController dataController = Get.find();
+
+  late String title = "";
+  late String email= "";
+  late String phone ="";
+  late int joinDate=0;
+
   bool existingCardVisibility = false;
   List cards = [
     {
@@ -41,11 +54,11 @@ class _Profile_pageState extends State<Profile_page> {
       Scaffold.of(context).showSnackBar(
         SnackBar(
           content: Text(response.message),
-          duration: Duration(milliseconds: response.success == true? 1200:3000),
+          duration:
+              Duration(milliseconds: response.success == true ? 1200 : 3000),
         ),
       );
-    }
-    else if(index == 1){
+    } else if (index == 1) {
       setState(() {
         existingCardVisibility = !existingCardVisibility;
       });
@@ -72,11 +85,23 @@ class _Profile_pageState extends State<Profile_page> {
     }
   }
 
+  UIUpdate() async{
+    var response = await dataController.UserData();
+
+    setState(() {
+      title = response.docs[0]['user_name'];
+      email = response.docs[0]['email'];
+      phone = response.docs[0]['phone'];
+      joinDate = response.docs[0]['joinDate'];
+    });
+    print("inside Response: UserName is " + response.docs[0]['joinDate']);
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     StripeService.init();
+    UIUpdate();
   }
 
   @override
@@ -113,7 +138,7 @@ class _Profile_pageState extends State<Profile_page> {
                       wd: 5,
                     ),
                     Text(
-                      "Zeshan Ul Haq",
+                      title,
                       style: kHeadingNormalTextStyle.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 22,
@@ -136,13 +161,13 @@ class _Profile_pageState extends State<Profile_page> {
                       ),
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
+                        children: [
+                          const Text(
                             "Email",
                             style: kWhiteColor,
                           ),
                           Text(
-                            "zeshanulhaque@gmail.com",
+                            email,
                             style: kWhiteColor,
                           ),
                         ],
@@ -155,13 +180,13 @@ class _Profile_pageState extends State<Profile_page> {
                       ),
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
+                        children: [
+                          const Text(
                             "Phone",
                             style: kWhiteColor,
                           ),
                           Text(
-                            "(92)333-9411708",
+                            phone,
                             style: kWhiteColor,
                           ),
                         ],
@@ -174,13 +199,13 @@ class _Profile_pageState extends State<Profile_page> {
                       ),
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
+                        children: [
+                          const Text(
                             "Join Date",
                             style: kWhiteColor,
                           ),
                           Text(
-                            "Friday, 17 March 2021",
+                            joinDate.toString(),
                             style: kWhiteColor,
                           ),
                         ],
@@ -269,7 +294,13 @@ class _Profile_pageState extends State<Profile_page> {
               ButtonWidget(
                 title: "Sign Out",
                 bgColor: Colors.deepOrangeAccent,
-                func: () {},
+                func: () async {
+                  await FirebaseAuth.instance.signOut();
+                  runApp(const MaterialApp(
+                      home: SignInPage(),
+                    ),
+                  );
+                },
                 radius: 5,
                 width: double.infinity,
               ),

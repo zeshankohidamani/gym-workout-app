@@ -18,7 +18,7 @@ class AuthController extends GetxController {
       try {
         CommonDialog.showDialog();
         var response =
-            await FirebaseFirestore.instance.collection('userslist').add(
+            await FirebaseFirestore.instance.collection('userslist').doc(userCredential.user!.uid).set(
               {
                 'user_Id': userCredential.user!.uid,
                 'user_name': username,
@@ -26,9 +26,9 @@ class AuthController extends GetxController {
                 'phone': phone,
                 'joinDate': DateTime.now().microsecondsSinceEpoch,
                 'email': email,
+                'isPurchase': false,
               }
             );
-        print("Firebase response1111 ${response.id}");
         CommonDialog.hideLoading();
         Get.back();
       } catch (e) {
@@ -66,7 +66,7 @@ class AuthController extends GetxController {
       print(userCredential.user!.uid);
       userId = userCredential.user!.uid;
       CommonDialog.hideLoading();
-      Get.off( CategoriesPage());
+      Get.off(CategoriesPage());
     } on FirebaseAuthException catch (e) {
       CommonDialog.hideLoading();
       if (e.code == 'user-not-found') {

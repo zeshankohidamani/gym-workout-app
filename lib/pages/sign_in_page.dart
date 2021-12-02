@@ -115,6 +115,9 @@ class _SignInPageState extends State<SignInPage> {
                         ),
                         // Email Text Field
                         TextFieldWidget(
+                          validator: (value){
+
+                          },
                           onChange: (value) {
                             email = value;
                           },
@@ -124,6 +127,9 @@ class _SignInPageState extends State<SignInPage> {
                         ),
                         // Password TextField
                         TextFieldWidget(
+                          validator: (value){
+
+                          },
                           onChange: (value) {
                             password = value;
                           },
@@ -133,24 +139,24 @@ class _SignInPageState extends State<SignInPage> {
                         FixedSpace(
                           ht: 15,
                         ),
-                        GestureDetector(
-                          onTap: (){
-                            Get.to(const Forget_Password());
-                          },
-                          child: const Align(
-                            alignment: Alignment.bottomRight,
-                            child: Text(
-                              'Forgot the Password',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ),
-                        ),
-                        FixedSpace(
-                          ht: 30,
-                        ),
+                        // GestureDetector(
+                        //   onTap: (){
+                        //     Get.to(const Forget_Password());
+                        //   },
+                        //   child: const Align(
+                        //     alignment: Alignment.bottomRight,
+                        //     child: Text(
+                        //       'Forgot the Password',
+                        //       style: TextStyle(
+                        //         color: Colors.white,
+                        //         fontSize: 13,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                        // FixedSpace(
+                        //   ht: 30,
+                        // ),
                         ButtonWidget(
                           width: double.infinity,
                           title: "Login",
